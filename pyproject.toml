@@ -1,4 +1,7 @@
 [tool.poetry]
+include = [
+            { path = "*.so", format = ["sdist", "wheel"] }
+        ]
 name = "pysatl_tsp"
 version = "0.1.0"
 description = "Python library for time series processing, serialization and deserialization"
@@ -16,6 +19,7 @@ scipy = "^1.14.0"
 matplotlib = "^3.9.1"
 scikit-learn = "^1.5.2"
 PyQt5 = "^5.15.11"
+cffi = "^1.17.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.2.2"
@@ -34,6 +38,7 @@ pytest-cov = "^6.0.0"
 websockets = "^15.0.1"
 pytest-asyncio = "^1.0.0"
 pandas_ta = "0.3.14b0"
+cffi = "^1.17.1"
 
 [tool.ruff]
 line-length = 120
@@ -59,7 +64,7 @@ strict = true
 
 
 [build-system]
-requires = ["poetry-core"]
+requires = ["poetry-core", "cffi", "setuptools"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
@@ -67,3 +72,7 @@ asyncio_default_fixture_loop_scope = "function"
 filterwarnings = [
     "ignore::DeprecationWarning:pkg_resources._vendor.pyparsing:",
 ]
+
+[tool.poetry.build]
+generate-setup-file = false
+script = "build_extension.py"
