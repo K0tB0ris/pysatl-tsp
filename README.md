@@ -31,6 +31,11 @@ Install dependencies:
 poetry install
 ```
 
+If you want, you can recompile C library:
+```bash
+poetry build
+```
+
 ## Basic Pipeline Example:
 
 ```python
@@ -55,7 +60,7 @@ pipeline = (
 results = []
 for avg in pipeline:
     results.append(avg)
-    
+
 print(f"Number of windows: {len(results)}")
 print(f"First 3 window averages: {results[:3]}")
 
@@ -70,6 +75,12 @@ plt.grid(True)
 plt.show()
 
 ```
+
+Examples of CHandler:
+
+[example1](example.py)
+
+[example2](compare.py)
 
 ## Development
 

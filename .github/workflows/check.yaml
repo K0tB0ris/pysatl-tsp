@@ -33,3 +33,7 @@ jobs:
       - name: Run tests
         run: |
          poetry run pytest --cov=pysatl_cpd
+
+      - name: Run C example
+        run: |
+         poetry run python compare.py

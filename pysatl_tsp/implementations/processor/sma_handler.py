@@ -1,7 +1,20 @@
+from collections.abc import Iterator
 from typing import Any
 
+import cffi
+
+from pysatl_tsp._c.lib import (
+    tsp_free_handler,
+    tsp_free_queue,
+    tsp_init_handler,
+    tsp_next_chain,
+    tsp_op_MA,
+    tsp_queue_init,
+)
 from pysatl_tsp.core import Handler
 from pysatl_tsp.core.processor.inductive.moving_window_handler import MovingWindowHandler
+
+ffi = cffi.FFI()
 
 
 class SMAHandler(MovingWindowHandler[float | None, float | None]):
@@ -86,9 +99,7 @@ class SMAHandler(MovingWindowHandler[float | None, float | None]):
 
 
 class MAHandler(MovingWindowHandler[float, float]):
-    def __init__(
-        self, length: int = 10, source: Handler[Any, float] = None
-    ):
+    def __init__(self, length: int = 10, source: Handler[Any, float] = None):
         """Initialize SMA handler with specified parameters.
 
         :param length: The period for the SMA calculation, defaults to 10
@@ -113,24 +124,19 @@ class MAHandler(MovingWindowHandler[float, float]):
         # Calculate simple average
         return sum(values) / len(values)
 
-import cffi
-
-ffi = cffi.FFI()
-from pysatl_tsp._c.lib import *
-from collections.abc import Iterator
 
 class CMAHandler(Handler[float, float]):
-    def __init__(
-        self, length: int = 10, source: Handler[Any, float] = None
-    ):
-
+    def __init__(self, length: int = 10, source: Handler[Any, float] = None):
         super().__init__(source=source)
         self.length = length if length and length > 0 else 10
         if source is not None:
-            self.handler = tsp_init_handler(ffi.cast("void *", tsp_queue_init(self.length)), source.handler, tsp_op_MA, ffi.NULL)
+            self.handler = tsp_init_handler(
+                ffi.cast("void *", tsp_queue_init(self.length)), source.handler, tsp_op_MA, ffi.NULL
+            )
         else:
-            self.handler = tsp_init_handler(ffi.cast("void *", tsp_queue_init(self.length)), ffi.NULL, tsp_op_MA, ffi.NULL)
-
+            self.handler = tsp_init_handler(
+                ffi.cast("void *", tsp_queue_init(self.length)), ffi.NULL, tsp_op_MA, ffi.NULL
+            )
 
     def __iter__(self) -> Iterator[float | None]:
         if self.source is None:
@@ -149,4 +155,3 @@ class CMAHandler(Handler[float, float]):
     def __del__(self):
         tsp_free_queue(self.handler.data)
         tsp_free_handler(self.handler)
-

@@ -1,6 +1,7 @@
 # This program describes the C library builder.
-from cffi import FFI
 import pathlib
+
+from cffi import FFI
 
 ffibuilder = FFI()
 
@@ -10,14 +11,14 @@ c_sources = "c"
 current_dir = pathlib.Path(__file__).parent
 project_dir = current_dir / project_name
 c_def = """"""
-headers = ''
+headers = ""
 src = []
 
 # Read and get C headers
 for item in project_dir.rglob("*.h"):
-    with open(item, "r") as f:
+    with open(item) as f:
         c_def += f.read()
-        headers += f"#include \"{item.relative_to(project_dir)}\"\n"
+        headers += f'#include "{item.relative_to(project_dir)}"\n'
 
 print("CDEF \n")
 print(c_def)
@@ -31,8 +32,12 @@ for item in (project_dir / c_sources).rglob("*.c"):
 
 # Set options to compile C library
 ffibuilder.cdef(c_def)
-ffibuilder.set_source(f"{project_name}._c", headers, sources=src,
-                      extra_compile_args=['-fno-omit-frame-pointer', '-Wall', '-Wextra'])
+ffibuilder.set_source(
+    f"{project_name}._c",
+    headers,
+    sources=src,
+    extra_compile_args=["-fno-omit-frame-pointer", "-Wall", "-Wextra", "-O2"],
+)
 
 # Compile C library
 if __name__ == "__main__":
