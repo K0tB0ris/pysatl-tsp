@@ -1,16 +1,22 @@
 from collections.abc import Iterator
 from typing import Any
+
+import cffi
+
+from pysatl_tsp._c.lib import (
+    tsp_free_handler,
+    tsp_init_handler,
+    tsp_next_buffer,
+    tsp_op_addFive,
+    tsp_op_multFive,
+)
 from pysatl_tsp.core import Handler
 from pysatl_tsp.core.data_providers import SimpleDataProvider
-import cffi
-from pysatl_tsp._c.lib import *
-
 
 ffi = cffi.FFI()
 
 
 class CAddFiveHandler(Handler[float, float]):
-
     def __init__(self, source: Handler[Any, float] | None = None):
         super().__init__(source)
         if source is not None:
@@ -37,7 +43,6 @@ class CAddFiveHandler(Handler[float, float]):
 
 
 class CMultFiveHandler(Handler[float, float]):
-
     def __init__(self, source: Handler[Any, float] | None = None):
         super().__init__(source)
         if source is not None:
@@ -60,9 +65,7 @@ class CMultFiveHandler(Handler[float, float]):
             raise StopIteration
 
     def __del__(self):
-
         tsp_free_handler(self.handler)
-
 
 
 data = [1.2]
@@ -72,15 +75,14 @@ print(data)
 provider = SimpleDataProvider(data)
 for elem in provider:
     print(elem, end=" ")
-print("\n-----------------------")
+print("\n-------------------------------------------\n")
 
-pipeline = (provider | CAddFiveHandler() | CAddFiveHandler() | CAddFiveHandler())
+pipeline = provider | CAddFiveHandler() | CAddFiveHandler() | CAddFiveHandler()
 for elem in pipeline:
-    print(elem)
-print("--------------------------------------------------------\n")
+    print(elem, end=" ")
+print("\n--------------------------------------------------------\n")
 
-pipeline1 = (provider | CAddFiveHandler() | CAddFiveHandler() | CMultFiveHandler())
+pipeline1 = provider | CAddFiveHandler() | CAddFiveHandler() | CMultFiveHandler()
 for elem in pipeline1:
     print(elem, end=" ")
 print("\n\n--------------------------------------------------------\n")
-

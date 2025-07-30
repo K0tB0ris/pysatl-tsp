@@ -1,18 +1,18 @@
+import time
 from collections.abc import Iterator
 from typing import Any
+
 import cffi
+
+from pysatl_tsp._c.lib import tsp_free_handler, tsp_init_handler, tsp_next_chain, tsp_op_addFive
 from pysatl_tsp.core import Handler
 from pysatl_tsp.core.data_providers import SimpleDataProvider
-from pysatl_tsp.implementations.processor.sma_handler import CMAHandler
-from pysatl_tsp.implementations.processor.sma_handler import MAHandler
-from pysatl_tsp._c.lib import *
-import time
+from pysatl_tsp.implementations.processor.sma_handler import CMAHandler, MAHandler
 
 ffi = cffi.FFI()
 
 
 class CSumHandler(Handler[float, float]):
-
     def __init__(self, source: Handler[Any, float] | None = None):
         super().__init__(source)
         if source is not None:
@@ -39,7 +39,6 @@ class CSumHandler(Handler[float, float]):
 
 
 class SumHandler(Handler[float, float]):
-
     def __init__(self, source: Handler[Any, float] | None = None):
         super().__init__(source)
 
@@ -56,8 +55,8 @@ for i in range(5):
     data = data + data
 provider = SimpleDataProvider(data)
 
-pipe1 = (provider | SumHandler() | SumHandler() | MAHandler())
-pipe2 = (provider | CSumHandler() | CSumHandler() | CMAHandler())
+pipe1 = provider | SumHandler() | MAHandler()
+pipe2 = provider | CSumHandler() | CMAHandler()
 
 start_time = time.monotonic()
 for i in pipe1:
@@ -67,5 +66,5 @@ for i in pipe2:
     pass
 end_time = time.monotonic()
 
-print(f"Work time with pure python objects: {round(first_mark-start_time,5)}s")
-print(f"Work time with c/python objects: {round(end_time-first_mark,5)}s")
+print(f"Work time with pure python objects: {round(first_mark - start_time, 5)}s")
+print(f"Work time with c/python objects: {round(end_time - first_mark, 5)}s")

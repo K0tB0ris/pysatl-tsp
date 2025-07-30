@@ -1,0 +1,171 @@
+pipe1 contain only n python modules and python MAHandler
+pipe2 contain n c modules and python MAHandler
+pipe1 contain only c modules and CMAHandler
+------------------------
+experiment with 2 modules
+pipe1: 4.5618 | 4.60906 | 4.58233
+pipe2: 8.31894 | 8.4449 | 8.38462
+pipe3: 4.05403 | 4.10104 | 4.12002
+----------------------------------------
+experiment with 3 modules
+pipe1: 4.81781 | 4.83699 | 4.82975
+pipe2: 8.36933 | 8.2959 | 8.37925
+pipe3: 4.05156 | 4.08148 | 3.97796
+----------------------------------------
+experiment with 4 modules
+pipe1: 5.07315 | 5.12435 | 5.08117
+pipe2: 8.40511 | 8.42093 | 8.38799
+pipe3: 4.12598 | 4.17444 | 4.08197
+----------------------------------------
+experiment with 5 modules
+pipe1: 5.55626 | 5.59984 | 5.62711
+pipe2: 8.46338 | 8.47011 | 8.59207
+pipe3: 4.20693 | 4.18491 | 4.13937
+----------------------------------------
+experiment with 6 modules
+pipe1: 5.89597 | 5.90958 | 5.88812
+pipe2: 8.514 | 8.62556 | 8.57743
+pipe3: 4.22507 | 4.23378 | 4.24003
+----------------------------------------
+experiment with 7 modules
+pipe1: 6.13046 | 6.14936 | 6.14134
+pipe2: 8.63903 | 8.65393 | 8.62232
+pipe3: 4.36332 | 4.28095 | 4.24727
+----------------------------------------
+experiment with 8 modules
+pipe1: 6.57465 | 6.56683 | 6.54223
+pipe2: 8.73139 | 8.76433 | 8.65002
+pipe3: 4.30021 | 4.3438 | 4.36538
+----------------------------------------
+experiment with 9 modules
+pipe1: 6.76133 | 6.81837 | 6.81314
+pipe2: 8.71753 | 8.68641 | 8.69169
+pipe3: 4.42629 | 4.40309 | 4.44361
+----------------------------------------
+experiment with 10 modules
+pipe1: 7.01894 | 7.0531 | 7.06491
+pipe2: 8.78619 | 8.89044 | 8.85624
+pipe3: 4.4608 | 4.46126 | 4.48121
+----------------------------------------
+experiment with 11 modules
+pipe1: 7.28348 | 7.2885 | 7.33457
+pipe2: 8.89592 | 8.91258 | 8.89998
+pipe3: 4.56461 | 4.47414 | 4.45234
+----------------------------------------
+experiment with 12 modules
+pipe1: 7.54738 | 7.57311 | 7.58729
+pipe2: 8.94114 | 8.94153 | 8.92168
+pipe3: 4.55998 | 4.51558 | 4.545
+----------------------------------------
+experiment with 13 modules
+pipe1: 7.84579 | 7.92807 | 7.8321
+pipe2: 8.99443 | 8.99204 | 8.99579
+pipe3: 4.70173 | 4.74538 | 4.64255
+----------------------------------------
+experiment with 14 modules
+pipe1: 8.0787 | 8.12906 | 8.24033
+pipe2: 9.03133 | 9.07072 | 9.06887
+pipe3: 4.81209 | 4.78886 | 4.70971
+----------------------------------------
+experiment with 15 modules
+pipe1: 8.33432 | 8.36807 | 8.35135
+pipe2: 9.09631 | 9.13554 | 9.27634
+pipe3: 4.81478 | 4.90479 | 4.88731
+----------------------------------------
+experiment with 16 modules
+pipe1: 8.78309 | 8.81374 | 8.67843
+pipe2: 9.24775 | 9.38096 | 9.19317
+pipe3: 4.96299 | 4.89135 | 4.87574
+----------------------------------------
+experiment with 17 modules
+pipe1: 8.99702 | 8.95358 | 8.98636
+pipe2: 9.34125 | 9.37228 | 9.36947
+pipe3: 5.04589 | 5.03499 | 5.00151
+----------------------------------------
+experiment with 18 modules
+pipe1: 9.2128 | 9.22441 | 9.24393
+pipe2: 9.36485 | 9.43484 | 9.46575
+pipe3: 5.10794 | 5.06589 | 5.09004
+----------------------------------------
+experiment with 19 modules
+pipe1: 9.45283 | 9.41066 | 9.46547
+pipe2: 9.45091 | 9.40007 | 9.50391
+pipe3: 5.16048 | 5.07828 | 5.17482
+----------------------------------------
+experiment with 20 modules
+pipe1: 9.75298 | 9.80966 | 9.69724
+pipe2: 9.61465 | 9.54848 | 9.47932
+pipe3: 5.21005 | 5.26636 | 5.17915
+----------------------------------------
+experiment with 21 modules
+pipe1: 9.92729 | 9.92021 | 10.04608
+pipe2: 9.58189 | 9.69247 | 9.60742
+pipe3: 5.21744 | 5.24941 | 5.26114
+----------------------------------------
+experiment with 22 modules
+pipe1: 10.24257 | 10.27651 | 10.29118
+pipe2: 9.64157 | 9.63004 | 9.69847
+pipe3: 5.25118 | 5.37114 | 5.35451
+----------------------------------------
+experiment with 23 modules
+pipe1: 10.5006 | 10.57416 | 10.60518
+pipe2: 9.6804 | 9.8121 | 9.77734
+pipe3: 5.33945 | 5.39121 | 5.36893
+----------------------------------------
+experiment with 24 modules
+pipe1: 10.84007 | 10.67755 | 10.71824
+pipe2: 9.72612 | 9.69187 | 9.66592
+pipe3: 5.40175 | 5.4113 | 5.40507
+----------------------------------------
+experiment with 25 modules
+pipe1: 10.85951 | 10.80134 | 11.05652
+pipe2: 9.67755 | 9.77984 | 9.71918
+pipe3: 5.29049 | 5.40865 | 5.40343
+----------------------------------------
+experiment with 26 modules
+pipe1: 11.12858 | 11.3556 | 11.12149
+pipe2: 9.75879 | 9.86673 | 9.796
+pipe3: 5.42811 | 5.50212 | 5.44487
+----------------------------------------
+
+/////////////////////////////////////
+
+compare only python and only c pipeline
+
+11.13092  |  11.02236  |  10.08893  % time work of Python pipeline with 2 modules
+
+15.90443  |  15.61939  |  17.63636  % time work of Python pipeline with 3 modules
+
+18.67032  |  18.53717  |  19.66478  % time work of Python pipeline with 4 modules
+
+24.28487  |  25.2672  |  26.43877  % time work of Python pipeline with 5 modules
+
+28.33978  |  28.35732  |  27.9902  % time work of Python pipeline with 6 modules
+
+28.82553  |  30.38377  |  30.84129  % time work of Python pipeline with 7 modules
+
+34.5941  |  33.85239  |  33.27391  % time work of Python pipeline with 8 modules
+
+34.53523  |  35.42318  |  34.77873  % time work of Python pipeline with 9 modules
+
+36.44618  |  36.74752  |  36.57093  % time work of Python pipeline with 10 modules
+
+37.32936  |  38.61369  |  39.29654  % time work of Python pipeline with 11 modules
+
+39.58203  |  40.37346  |  40.0972  % time work of Python pipeline with 12 modules
+
+40.07316  |  40.14463  |  40.72408  % time work of Python pipeline with 13 modules
+
+40.43484  |  41.08964  |  42.8456  % time work of Python pipeline with 14 modules
+
+42.22951  |  41.38679  |  41.47874  % time work of Python pipeline with 15 modules
+
+43.49386  |  44.5031  |  43.81773  % time work of Python pipeline with 16 modules
+
+43.91601  |  43.76559  |  44.34329  % time work of Python pipeline with 17 modules
+
+44.55605  |  45.08171  |  44.93648  % time work of Python pipeline with 18 modules
+
+45.40807  |  46.03694  |  45.32946  % time work of Python pipeline with 19 modules
+
+46.57993  |  46.31452  |  46.59147  % time work of Python pipeline with 20 modules
