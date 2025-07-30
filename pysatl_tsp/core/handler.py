@@ -7,6 +7,10 @@ from typing import (
     Generic,
     TypeVar,
 )
+import cffi
+from pysatl_tsp._c.lib import *
+
+ffi = cffi.FFI()
 
 __all__ = ["Handler", "T", "U", "V"]
 
@@ -104,6 +108,12 @@ class Pipeline(Handler[T, V]):
 
         self.second = second
         self.second.source = self.first
+        if hasattr(self.second, 'handler'):
+            if hasattr(self.first, 'handler'):
+                self.second.handler.src = self.first.handler
+            else:
+                self.second.handler.src = ffi.NULL
+            self.handler = self.second.handler
 
     def __iter__(self) -> Iterator[V]:
         """Create an iterator that processes data through both handlers in sequence.
