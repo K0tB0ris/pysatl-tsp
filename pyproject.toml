@@ -19,7 +19,7 @@ scipy = "^1.14.0"
 matplotlib = "^3.9.1"
 scikit-learn = "^1.5.2"
 PyQt5 = "^5.15.11"
-cffi = "^1.17.1"
+cffi = "^1.17.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.2.2"
@@ -38,7 +38,7 @@ pytest-cov = "^6.0.0"
 websockets = "^15.0.1"
 pytest-asyncio = "^1.0.0"
 pandas_ta = "0.3.14b0"
-cffi = "^1.17.1"
+cffi = "^1.17.0"
 
 [tool.ruff]
 line-length = 120
@@ -62,6 +62,9 @@ files = "pysatl_tsp"
 mypy_path = "pysatl_tsp"
 strict = true
 
+[[tool.mypy.overrides]]
+module = ["pysatl_tsp._c.lib"]
+ignore_missing_imports = true
 
 [build-system]
 requires = ["poetry-core", "cffi", "setuptools"]
