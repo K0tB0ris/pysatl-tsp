@@ -83,3 +83,70 @@ class SMAHandler(MovingWindowHandler[float | None, float | None]):
 
         # Calculate simple average
         return sum(valid_values) / len(valid_values)
+
+
+class MAHandler(MovingWindowHandler[float, float]):
+    def __init__(
+        self, length: int = 10, source: Handler[Any, float] = None
+    ):
+        """Initialize SMA handler with specified parameters.
+
+        :param length: The period for the SMA calculation, defaults to 10
+        :param source: Input data source, defaults to None
+        """
+        super().__init__(length=length, source=source)
+
+    def _compute_result(self, state: dict[str, Any]) -> float | None:
+        """Calculate simple moving average based on current values in the window.
+
+        This method:
+        3. Calculates the arithmetic mean of valid values
+
+        The SMA is calculated as the sum of valid values divided by the count of valid values,
+        which means None values are completely ignored rather than treated as zeros.
+
+        :param state: Current state containing the values in the moving window
+        :return: Simple moving average of valid values or None if there aren't enough valid values
+        """
+        values = state["values"]
+
+        # Calculate simple average
+        return sum(values) / len(values)
+
+import cffi
+
+ffi = cffi.FFI()
+from pysatl_tsp._c.lib import *
+from collections.abc import Iterator
+
+class CMAHandler(Handler[float, float]):
+    def __init__(
+        self, length: int = 10, source: Handler[Any, float] = None
+    ):
+
+        super().__init__(source=source)
+        self.length = length if length and length > 0 else 10
+        if source is not None:
+            self.handler = tsp_init_handler(ffi.cast("void *", tsp_queue_init(self.length)), source.handler, tsp_op_MA, ffi.NULL)
+        else:
+            self.handler = tsp_init_handler(ffi.cast("void *", tsp_queue_init(self.length)), ffi.NULL, tsp_op_MA, ffi.NULL)
+
+
+    def __iter__(self) -> Iterator[float | None]:
+        if self.source is None:
+            raise ValueError("Source is not set")
+        self.src_itr = iter(self.source)
+        self.handler.py_iter = ffi.cast("void*", id(self.src_itr))
+        return self
+
+    def __next__(self):
+        res = tsp_next_chain(self.handler, 64)
+        if res != ffi.NULL:
+            return res[0]
+        else:
+            raise StopIteration
+
+    def __del__(self):
+        tsp_free_queue(self.handler.data)
+        tsp_free_handler(self.handler)
+
