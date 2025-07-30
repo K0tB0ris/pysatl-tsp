@@ -28,7 +28,7 @@ jobs:
 
       - name: Check types
         run: |
-          poetry run mypy
+          poetry run mypy --install-types
 
       - name: Run tests
         run: |
