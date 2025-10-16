@@ -1,7 +1,7 @@
 from typing import Any
 
 import pandas as pd
-import pandas_ta as ta  # type: ignore
+import pandas_ta_classic as ta  # type: ignore
 import pytest
 from hypothesis import given
 from hypothesis import strategies as st
@@ -21,7 +21,7 @@ from tests.utils import safe_allclose
 
 
 def calculate_reference_zlma(data: Any, length: int, mamode: str) -> list[float | None]:
-    """Calculates ZLMA directly, avoiding calling the problematic pandas_ta.zlma function"""
+    """Calculates ZLMA directly, avoiding calling the problematic pandas_ta_classic.zlma function"""
     pd_data = pd.Series(data)
 
     # Calculate lag as in the original zlma function
@@ -74,7 +74,7 @@ def test_zlma_calculation_property_based(data: list[float | None], length: int, 
     if all(x is None for x in data):
         data = [*data, 1.0]  # Add at least one non-None value
 
-    # Replace None with NaN for pandas_ta
+    # Replace None with NaN for pandas_ta_classic
     pd_data: list[float | None] = [float("nan") if x is None else x for x in data]
 
     # Calculate reference values using our helper function
@@ -150,7 +150,7 @@ def test_zlma_calculation_property_based(data: list[float | None], length: int, 
     ],
 )
 def test_zlma_calculation_specific_cases(data: list[float | None], length: int, mamode: str) -> None:
-    # Replace None with NaN for pandas_ta
+    # Replace None with NaN for pandas_ta_classic
     pd_data: list[float | None] = [float("nan") if x is None else x for x in data]
 
     # Calculate reference values using our helper function

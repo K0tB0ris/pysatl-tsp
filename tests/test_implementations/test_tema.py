@@ -1,5 +1,5 @@
 import pandas as pd
-import pandas_ta  # type: ignore
+import pandas_ta_classic  # type: ignore
 import pytest
 from hypothesis import given
 from hypothesis import strategies as st
@@ -24,8 +24,8 @@ def test_tema_calculation_with_none_property_based(data: list[float | None], len
     if all(x is None for x in data):
         data = [*data, 1.0]
 
-    # Calculate reference values using pandas_ta
-    pta = pandas_ta.tema(pd.Series(data), length=length)
+    # Calculate reference values using pandas_ta_classic
+    pta = pandas_ta_classic.tema(pd.Series(data), length=length)
     pta_result: list[float | None] = [elem if not pd.isna(elem) else None for elem in list(pta)]
 
     # Calculate values using our handler
@@ -56,7 +56,7 @@ def test_tema_calculation_with_none_property_based(data: list[float | None], len
     ],
 )
 def test_tema_calculation_with_none_specific_cases(data: list[float | None], length: int) -> None:
-    pta = pandas_ta.tema(pd.Series(data), length)
+    pta = pandas_ta_classic.tema(pd.Series(data), length)
     pta_result: list[float | None] = [elem if not pd.isna(elem) else None for elem in list(pta)]
 
     provider: SimpleDataProvider[float | None] = SimpleDataProvider(data)

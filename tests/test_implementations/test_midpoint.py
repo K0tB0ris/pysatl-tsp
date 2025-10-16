@@ -1,5 +1,5 @@
 import pandas as pd
-import pandas_ta as ta  # type: ignore
+import pandas_ta_classic as ta  # type: ignore
 import pytest
 from hypothesis import given
 from hypothesis import strategies as st
@@ -25,8 +25,8 @@ def test_midpoint_calculation_with_none_property_based(data: list[float | None],
     if all(x is None for x in data):
         data = [*data, 1.0]
 
-    # Calculate reference values using pandas_ta
-    pta = ta.midpoint(pd.Series(data), length=length)  # pandas_ta uses "midprice" function
+    # Calculate reference values using pandas_ta_classic
+    pta = ta.midpoint(pd.Series(data), length=length)  # pandas_ta_classic uses "midprice" function
     pta_result: list[float | None] = [elem if not pd.isna(elem) else None for elem in list(pta)]
 
     # Calculate values using our handler

@@ -3,7 +3,7 @@ from typing import Any, Optional
 
 import numpy as np
 import pandas as pd
-import pandas_ta as ta  # type: ignore
+import pandas_ta_classic as ta  # type: ignore
 import pytest
 from hypothesis import given
 from hypothesis import strategies as st
@@ -17,7 +17,7 @@ def to_pandas_series(data: list[float]) -> Any:
     return pd.Series(data)
 
 
-def calculate_pandas_ta_wma(data: list[float], length: int, asc: bool) -> list[float | None]:
+def calculate_pandas_ta_classic_wma(data: list[float], length: int, asc: bool) -> list[float | None]:
     series = to_pandas_series(data)
     wma_result = ta.wma(series, length=length, asc=asc)
     res: list[float | None] = wma_result.dropna().tolist()
@@ -35,7 +35,7 @@ def test_wma_basic() -> None:
     length = 5
     asc = True
 
-    pandas_result = calculate_pandas_ta_wma(data, length, asc)
+    pandas_result = calculate_pandas_ta_classic_wma(data, length, asc)
     our_result = calculate_our_wma(data, length, asc)
 
     assert len(pandas_result) == len(our_result)
@@ -46,7 +46,7 @@ def test_wma_basic() -> None:
 def test_wma_parametrized(length: int, asc: bool) -> None:
     data: list[float] = [float(i) for i in range(1, 20)]
 
-    pandas_result = calculate_pandas_ta_wma(data, length, asc)
+    pandas_result = calculate_pandas_ta_classic_wma(data, length, asc)
     our_result = calculate_our_wma(data, length, asc)
 
     assert len(pandas_result) == len(our_result)
@@ -60,7 +60,7 @@ def test_wma_parametrized(length: int, asc: bool) -> None:
     length=st.integers(min_value=2, max_value=10),
 )
 def test_wma_property_based(data: list[float], length: int) -> None:
-    pandas_result = calculate_pandas_ta_wma(data, length, True)
+    pandas_result = calculate_pandas_ta_classic_wma(data, length, True)
     our_result = calculate_our_wma(data, length, True)
 
     assert len(pandas_result) == len(our_result)
