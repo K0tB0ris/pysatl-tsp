@@ -1,5 +1,5 @@
 import pandas as pd
-import pandas_ta as ta  # type: ignore
+import pandas_ta_classic as ta  # type: ignore
 import pytest
 from hypothesis import given
 from hypothesis import strategies as st
@@ -26,7 +26,7 @@ def test_pwma_calculation_with_none_property_based(data: list[float | None], len
     if all(x is None for x in data):
         data = [*data, 1.0]
 
-    # Calculate reference values using pandas_ta
+    # Calculate reference values using pandas_ta_classic
     pta = ta.pwma(pd.Series(data), length=length, asc=asc)
     pta_result: list[float | None] = [elem if not pd.isna(elem) else None for elem in list(pta)]
 
@@ -74,7 +74,7 @@ def test_pwma_calculation_with_none_property_based(data: list[float | None], len
     ],
 )
 def test_pwma_calculation_with_none_specific_cases(data: list[float | None], length: int, asc: bool) -> None:
-    # Calculate reference values using pandas_ta
+    # Calculate reference values using pandas_ta_classic
     pta = ta.pwma(pd.Series(data), length=length, asc=asc)
     pta_result: list[float | None] = [elem if not pd.isna(elem) else None for elem in list(pta)]
 

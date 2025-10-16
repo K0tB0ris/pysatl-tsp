@@ -36,7 +36,7 @@ ffibuilder.set_source(
     f"{project_name}._c",
     headers,
     sources=src,
-    extra_compile_args=["-fno-omit-frame-pointer", "-Wall", "-Wextra", "-O2"],
+    extra_compile_args=["-fno-omit-frame-pointer", "-Wall", "-Wextra", "-g"],
 )
 
 # Compile C library
