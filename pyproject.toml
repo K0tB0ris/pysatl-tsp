@@ -38,7 +38,7 @@ microsoft-python-type-stubs = {git = "https://github.com/microsoft/python-type-s
 pytest-cov = "^6.0.0"
 websockets = "^15.0.1"
 pytest-asyncio = "^1.0.0"
-pandas_ta = ">=0.3.14b0"
+pandas_ta = "0.3.14b0"
 cffi = ">=1.17.0"
 setuptools = "^80.9.0"
 
