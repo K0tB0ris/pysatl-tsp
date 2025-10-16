@@ -1,5 +1,5 @@
 import pandas as pd
-import pandas_ta  # type: ignore
+import pandas_ta_classic  # type: ignore
 import pytest
 from hypothesis import given
 from hypothesis import strategies as st
@@ -26,7 +26,7 @@ def test_ema_calculation_with_none_property_based(data: list[float], length: int
     if all(x is None for x in data):
         data = [*data, 1.0]
 
-    pta = pandas_ta.ema(pd.Series(data), length, talib=None, adjust=adjust, sma=sma)
+    pta = pandas_ta_classic.ema(pd.Series(data), length, talib=None, adjust=adjust, sma=sma)
     pta_result: list[float | None] = [elem if not pd.isna(elem) else None for elem in list(pta)]
 
     provider: SimpleDataProvider[float | None] = SimpleDataProvider(data)
@@ -55,7 +55,7 @@ def test_ema_calculation_with_none_property_based(data: list[float], length: int
 def test_ema_calculation_with_none_specific_cases(
     data: list[float | None], length: int, sma: bool, adjust: bool, expected_equal: bool
 ) -> None:
-    pta = pandas_ta.ema(pd.Series(data), length, talib=None, adjust=adjust, sma=sma)
+    pta = pandas_ta_classic.ema(pd.Series(data), length, talib=None, adjust=adjust, sma=sma)
     pta_result: list[float | None] = [elem if not pd.isna(elem) else None for elem in list(pta)]
 
     provider: SimpleDataProvider[float | None] = SimpleDataProvider(data)

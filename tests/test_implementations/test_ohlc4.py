@@ -1,5 +1,5 @@
 import pandas as pd
-import pandas_ta as ta  # type: ignore
+import pandas_ta_classic as ta  # type: ignore
 import pytest
 from hypothesis import given
 from hypothesis import strategies as st
@@ -24,13 +24,13 @@ from tests.utils import safe_allclose
 def test_ohlc4_calculation_property_based(
     data: list[tuple[float | None, float | None, float | None, float | None]],
 ) -> None:
-    # Split the data into separate O, H, L, C lists for pandas_ta
+    # Split the data into separate O, H, L, C lists for pandas_ta_classic
     opens = [o for o, _, _, _ in data]
     highs = [h for _, h, _, _ in data]
     lows = [x for _, _, x, _ in data]
     closes = [c for _, _, _, c in data]
 
-    # Calculate reference values using pandas_ta
+    # Calculate reference values using pandas_ta_classic
     df = pd.DataFrame({"open": opens, "high": highs, "low": lows, "close": closes})
     pta = ta.ohlc4(open_=df["open"], high=df["high"], low=df["low"], close=df["close"])
     pta_result: list[float | None] = [elem if not pd.isna(elem) else None for elem in list(pta)]
@@ -111,13 +111,13 @@ def test_ohlc4_calculation_property_based(
 def test_ohlc4_calculation_specific_cases(
     data: list[tuple[float | None, float | None, float | None, float | None]],
 ) -> None:
-    # Split the data into separate O, H, L, C lists for pandas_ta
+    # Split the data into separate O, H, L, C lists for pandas_ta_classic
     opens = [o for o, _, _, _ in data]
     highs = [h for _, h, _, _ in data]
     lows = [x for _, _, x, _ in data]
     closes = [c for _, _, _, c in data]
 
-    # Calculate reference values using pandas_ta
+    # Calculate reference values using pandas_ta_classic
     df = pd.DataFrame({"open": opens, "high": highs, "low": lows, "close": closes})
     pta = ta.ohlc4(open_=df["open"], high=df["high"], low=df["low"], close=df["close"])
     pta_result: list[float | None] = [elem if not pd.isna(elem) else None for elem in list(pta)]

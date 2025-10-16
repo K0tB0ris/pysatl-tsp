@@ -1,5 +1,5 @@
 import pandas as pd
-import pandas_ta as ta  # type: ignore
+import pandas_ta_classic as ta  # type: ignore
 import pytest
 
 from pysatl_tsp.core.data_providers import SimpleDataProvider
@@ -43,10 +43,10 @@ from tests.utils import safe_allclose
     ],
 )
 def test_t3_calculation_specific_cases(data: list[float | None], length: int, a: float) -> None:
-    # Replace None values with NaN for pandas_ta
+    # Replace None values with NaN for pandas_ta_classic
     pd_data = [float("nan") if x is None else x for x in data]
 
-    # Calculate reference values using pandas_ta
+    # Calculate reference values using pandas_ta_classic
     pta = ta.t3(pd.Series(pd_data), length=length, a=a)
     pta_result: list[float | None] = [elem if not pd.isna(elem) else None for elem in list(pta)]
 

@@ -1,5 +1,5 @@
 import pandas as pd
-import pandas_ta as ta  # type: ignore
+import pandas_ta_classic as ta  # type: ignore
 import pytest
 from hypothesis import given
 from hypothesis import strategies as st
@@ -32,7 +32,7 @@ def test_sma_calculation_property_based(data: list[float | None], length: int, m
     if all(x is None for x in data):
         data = [*data, 1.0]  # Add at least one non-None value
 
-    # Calculate reference values using pandas_ta
+    # Calculate reference values using pandas_ta_classic
     pta = ta.sma(pd.Series(data), length=length, min_periods=effective_min_periods)
     pta_result: list[float | None] = [elem if not pd.isna(elem) else None for elem in list(pta)]
 
@@ -88,7 +88,7 @@ def test_sma_calculation_property_based(data: list[float | None], length: int, m
     ],
 )
 def test_sma_calculation_specific_cases(data: list[float | None], length: int, min_periods: int | None) -> None:
-    # Calculate reference values using pandas_ta
+    # Calculate reference values using pandas_ta_classic
     pta = ta.sma(pd.Series(data), length=length, min_periods=min_periods)
     pta_result: list[float | None] = [elem if not pd.isna(elem) else None for elem in list(pta)]
 

@@ -1,5 +1,5 @@
 import pandas as pd
-import pandas_ta as ta  # type: ignore
+import pandas_ta_classic as ta  # type: ignore
 import pytest
 from hypothesis import given
 from hypothesis import strategies as st
@@ -37,11 +37,11 @@ def test_midprice_calculation_property_based(data: list[tuple[float | None, floa
 
     data = valid_data
 
-    # Split into separate high and low series for pandas_ta
+    # Split into separate high and low series for pandas_ta_classic
     highs = [h for h, _ in data]
     lows = [x for _, x in data]
 
-    # Calculate reference values using pandas_ta
+    # Calculate reference values using pandas_ta_classic
     pta = ta.midprice(pd.Series(highs), pd.Series(lows), length=length)
     pta_result: list[float | None] = [elem if not pd.isna(elem) else None for elem in list(pta)]
 
@@ -78,11 +78,11 @@ def test_midprice_calculation_property_based(data: list[tuple[float | None, floa
     ],
 )
 def test_midprice_calculation_specific_cases(data: list[tuple[float | None, float | None]], length: int) -> None:
-    # Split into separate high and low series for pandas_ta
+    # Split into separate high and low series for pandas_ta_classic
     highs = [h for h, _ in data]
     lows = [x for _, x in data]
 
-    # Calculate reference values using pandas_ta
+    # Calculate reference values using pandas_ta_classic
     pta = ta.midprice(pd.Series(highs), pd.Series(lows), length=length)
     pta_result: list[float | None] = [elem if not pd.isna(elem) else None for elem in list(pta)]
 
