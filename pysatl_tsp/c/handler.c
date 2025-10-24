@@ -3,6 +3,11 @@
 #include <Python.h>
 #include <stdio.h>
 
+/*
+ * Creates and initializes a TSP handler with given components
+ * See also handler.h
+ */
+
 struct tsp_handler *tsp_init_handler(void *data, struct tsp_handler *src,
 				     double (*operation)(struct tsp_handler *handler, void *),
 				     void *pyobj) {
@@ -26,6 +31,37 @@ void tsp_free_handler(struct tsp_handler *handler) {
 		free(handler->buffer);
 	}
 	free(handler);
+}
+
+/* Init circular queue
+ * See also handler.h
+ */
+
+struct tsp_queue *tsp_queue_init(int capacity) {
+	struct tsp_queue *obj = malloc(sizeof(struct tsp_queue));
+	if (obj == NULL) {
+		fprintf(stderr, "Could not allocate memory to initialize Queue\n");
+		return NULL;
+	}
+	obj->buffer = malloc(capacity * sizeof(obj->buffer[0]));
+	if (!obj->buffer) {
+		fprintf(stderr, "Could not allocate memory for Queue\n");
+		return NULL;
+	}
+	obj->capacity = capacity;
+	obj->head = 0;
+	obj->tail = 0;
+	obj->size = 0;
+	obj->sum = 0;
+	return obj;
+}
+
+void tsp_free_queue(void *q) {
+	struct tsp_queue *p = (struct tsp_queue *)q;
+	if (p->buffer != NULL) {
+		free(p->buffer);
+	}
+	free(p);
 }
 
 /* tsp_next_buffer apply operation to the next element from the iterator */
