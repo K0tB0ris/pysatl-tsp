@@ -47,8 +47,6 @@ struct tsp_ema_data *tsp_ema_data_init(int capacity, int sma, double *alpha, int
 
 	obj->ema_numerator = 0;
 	obj->ema_denominator = 0;
-	printf("length %d sma %d alpha %f adjust %d \n", capacity, obj->sma, obj->alpha,
-	       obj->adjust);
 	return obj;
 }
 

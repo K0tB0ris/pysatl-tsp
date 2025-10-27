@@ -145,7 +145,7 @@ class EMAHandler(InductiveHandler[float | None, float | None]):
         return None
 
 
-class CEMAHandler(Handler[float, float]):
+class CEMAHandler(Handler[float | None, float | None]):
     def __init__(
         self,
         length: int = 10,
@@ -164,29 +164,29 @@ class CEMAHandler(Handler[float, float]):
             self.sma = 1
         else:
             self.sma = 0
-        if alpha is None:
-            self.alpha = ffi.NULL
+        self.alpha = alpha
+        if self.alpha is None:
+            self.c_alpha = ffi.NULL
         else:
-            self.alpha = ffi.new("double *", alpha)
-
+            self.c_alpha = ffi.new("double *", float(self.alpha))  # type: ignore
         if source is not None:
             if hasattr(source, "handler"):
                 self.handler = tsp_init_handler(
-                    ffi.cast("void *", tsp_ema_data_init(self.length, self.sma, self.alpha, self.adjust)),
+                    ffi.cast("void *", tsp_ema_data_init(self.length, self.sma, self.c_alpha, self.adjust)),
                     source.handler,
                     tsp_op_EMA,
                     ffi.NULL,
                 )
             else:
                 self.handler = tsp_init_handler(
-                    ffi.cast("void *", tsp_ema_data_init(self.length, self.sma, self.alpha, self.adjust)),
+                    ffi.cast("void *", tsp_ema_data_init(self.length, self.sma, self.c_alpha, self.adjust)),
                     ffi.NULL,
                     tsp_op_EMA,
                     ffi.NULL,
                 )
         else:
             self.handler = tsp_init_handler(
-                ffi.cast("void *", tsp_ema_data_init(self.length, self.sma, self.alpha, self.adjust)),
+                ffi.cast("void *", tsp_ema_data_init(self.length, self.sma, self.c_alpha, self.adjust)),
                 ffi.NULL,
                 tsp_op_EMA,
                 ffi.NULL,
@@ -199,7 +199,7 @@ class CEMAHandler(Handler[float, float]):
         self.handler.py_iter = ffi.cast("void*", id(self.src_itr))
         return self
 
-    def __next__(self) -> float:
+    def __next__(self) -> float | None:
         res = tsp_next_chain(self.handler, 64)
         if res != ffi.NULL:
             if cast(float, res[0]) != float("inf"):
@@ -209,6 +209,6 @@ class CEMAHandler(Handler[float, float]):
         else:
             raise StopIteration
 
-    def __del__(self):
+    def __del__(self) -> None:
         tsp_free_ema_data(self.handler.data)
         tsp_free_handler(self.handler)
