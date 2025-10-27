@@ -24,7 +24,7 @@
  * When adjust=True, uses an adjusted weighting method that gives more weight to recent
  * observations.
  */
-struct tsp_ema_data *tsp_ema_data_init(int capacity, int sma, double *alpha, double adjust) {
+struct tsp_ema_data *tsp_ema_data_init(int capacity, int sma, double *alpha, int adjust) {
 	struct tsp_ema_data *obj = malloc(sizeof(struct tsp_ema_data));
 	if (obj == NULL) {
 		fprintf(stderr, "Could not allocate memory to initialize ema's data\n");
@@ -32,6 +32,7 @@ struct tsp_ema_data *tsp_ema_data_init(int capacity, int sma, double *alpha, dou
 	}
 	obj->queue = tsp_queue_init(capacity);
 	if (obj->queue == NULL) {
+		fprintf(stderr, "Could not allocate memory to initialize queue\n");
 		return NULL;
 	}
 
@@ -39,13 +40,15 @@ struct tsp_ema_data *tsp_ema_data_init(int capacity, int sma, double *alpha, dou
 	obj->adjust = adjust;
 
 	if (alpha == NULL) {
-		obj->alpha = 2 / (capacity + 1);
+		obj->alpha = 2.0 / (capacity + 1);
 	} else {
 		obj->alpha = *alpha;
 	}
 
 	obj->ema_numerator = 0;
 	obj->ema_denominator = 0;
+	printf("length %d sma %d alpha %f adjust %d \n", capacity, obj->sma, obj->alpha,
+	       obj->adjust);
 	return obj;
 }
 
@@ -130,12 +133,13 @@ static int tsp_update_state(struct tsp_ema_data *data, double *value) {
 		data->ema_denominator = (1 - data->alpha) * data->ema_denominator + 1;
 	} else if ((data->adjust == 0) && (value != NULL)) {
 		// Standard EMA (assumes infinite history)
-		if (data->ema_denominator != 0) {
-			data->ema_numerator = (1 - data->alpha) * data->ema_numerator + *value;
+		if (data->ema_denominator != 0.0) {
+			data->ema_numerator =
+			    (1 - data->alpha) * data->ema_numerator + data->alpha * *value;
 		} else {
 			data->ema_numerator = *value; // First value initialization
 		}
-		data->ema_denominator = 1;
+		data->ema_denominator = 1.0;
 	}
 	return 0;
 }
