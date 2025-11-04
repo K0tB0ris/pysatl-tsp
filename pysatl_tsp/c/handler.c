@@ -7,7 +7,6 @@
  * Creates and initializes a TSP handler with given components
  * See also handler.h
  */
-
 struct tsp_handler *tsp_init_handler(void *data, struct tsp_handler *src,
 				     double (*operation)(struct tsp_handler *handler, void *),
 				     void *pyobj) {
@@ -36,7 +35,6 @@ void tsp_free_handler(struct tsp_handler *handler) {
 /* Init circular queue
  * See also handler.h
  */
-
 struct tsp_queue *tsp_queue_init(int capacity) {
 	struct tsp_queue *obj = malloc(sizeof(struct tsp_queue));
 	if (obj == NULL) {
@@ -65,7 +63,6 @@ void tsp_free_queue(void *q) {
 }
 
 /* tsp_next_buffer apply operation to the next element from the iterator */
-
 double *tsp_next_buffer(struct tsp_handler *handler, int capacity) {
 	// check handler existence
 	if (handler == NULL) {
@@ -119,7 +116,6 @@ double *tsp_next_buffer(struct tsp_handler *handler, int capacity) {
  * Follows the chain until it will meet hadnler with source = NULL
  * And then sequentially applies operations to the data
  */
-
 double *tsp_next_chain(struct tsp_handler *handler, int capacity) {
 	if (handler->src == NULL) {
 		// Find handler(NULL, float)

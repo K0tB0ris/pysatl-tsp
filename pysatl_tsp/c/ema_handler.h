@@ -1,4 +1,12 @@
+#define TSP_API_START
+#define TSP_API_END
+#ifndef EMA_HANDLER_H
+#define EMA_HANDLER_H
+#include "handler.h"
+
+TSP_API_START
 /*
+ *
  * Data structure for Exponential Moving Average (EMA) calculations
  * with support for both simple and exponential moving averages
  *
@@ -14,7 +22,8 @@ struct tsp_ema_data {
 	double ema_numerator;	 // Current EMA value before normalization
 	double ema_denominator;	 // Cumulative weight sum for proper normalization
 };
-
 struct tsp_ema_data *tsp_ema_data_init(int capacity, int sma, double *alpha, int adjust);
 void tsp_free_ema_data(void *q);
 double tsp_op_EMA(struct tsp_handler *handler, void *next);
+TSP_API_END
+#endif /* EMA_HANDLER_H */
