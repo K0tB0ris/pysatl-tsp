@@ -1,3 +1,4 @@
+#include "operation.h"
 double tsp_op_addFive(struct tsp_handler *handler, void *first) {
 	double *one = (double *)first;
 	double sum = 0;

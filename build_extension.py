@@ -17,13 +17,19 @@ src = []
 # Read and get C headers
 for item in project_dir.rglob("*.h"):
     with open(item) as f:
-        c_def += f.read()
+        headers += f'#include "{item.relative_to(project_dir)}"\n'
+        read_marker = 0
+        while True:
+            line = f.readline()
+            if not line:
+                break
+            if line == "TSP_API_END\n":
+                read_marker = 0
+            if read_marker == 1:
+                c_def += line
+            if line == "TSP_API_START\n":
+                read_marker = 1
 
-headers += """#include "c/handler.h"
-#include "c/mahandler.h"
-#include "c/ema_handler.h"
-#include "c/operation.h"
-"""
 print("CDEF \n")
 print(c_def)
 

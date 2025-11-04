@@ -1,3 +1,9 @@
+#define TSP_API_START
+#define TSP_API_END
+#ifndef HANDLER_H
+#define HANDLER_H
+
+TSP_API_START
 typedef struct _object PyObject;
 
 /*
@@ -39,3 +45,5 @@ void tsp_free_handler(struct tsp_handler *handler);
 
 double *tsp_next_buffer(struct tsp_handler *handler, int capacity);
 double *tsp_next_chain(struct tsp_handler *handler, int capacity);
+TSP_API_END
+#endif /* HANDLER_H */
