@@ -24,7 +24,7 @@
  * When adjust=True, uses an adjusted weighting method that gives more weight to recent
  * observations.
  */
-struct tsp_ema_data *tsp_ema_data_init(int capacity, int sma, double *alpha, int adjust) {
+struct tsp_ema_data *tsp_ema_data_init(int capacity, int sma, double alpha, int adjust) {
 	struct tsp_ema_data *obj = malloc(sizeof(struct tsp_ema_data));
 	if (obj == NULL) {
 		fprintf(stderr, "Could not allocate memory to initialize ema's data\n");
@@ -38,12 +38,7 @@ struct tsp_ema_data *tsp_ema_data_init(int capacity, int sma, double *alpha, int
 
 	obj->sma = sma;
 	obj->adjust = adjust;
-
-	if (alpha == NULL) {
-		obj->alpha = 2.0 / (capacity + 1);
-	} else {
-		obj->alpha = *alpha;
-	}
+	obj->alpha = alpha;
 
 	obj->ema_numerator = 0;
 	obj->ema_denominator = 0;

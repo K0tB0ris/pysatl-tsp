@@ -164,29 +164,29 @@ class CEMAHandler(Handler[float | None, float | None]):
             self.sma = 1
         else:
             self.sma = 0
-        self.alpha = alpha
-        if self.alpha is None:
-            self.c_alpha = ffi.NULL
+
+        if alpha is None:
+            self.alpha = 2 / (self.length + 1)
         else:
-            self.c_alpha = ffi.new("double *", float(self.alpha))  # type: ignore
+            self.alpha = alpha
         if source is not None:
             if hasattr(source, "handler"):
                 self.handler = tsp_init_handler(
-                    ffi.cast("void *", tsp_ema_data_init(self.length, self.sma, self.c_alpha, self.adjust)),
+                    ffi.cast("void *", tsp_ema_data_init(self.length, self.sma, self.alpha, self.adjust)),
                     source.handler,
                     tsp_op_EMA,
                     ffi.NULL,
                 )
             else:
                 self.handler = tsp_init_handler(
-                    ffi.cast("void *", tsp_ema_data_init(self.length, self.sma, self.c_alpha, self.adjust)),
+                    ffi.cast("void *", tsp_ema_data_init(self.length, self.sma, self.alpha, self.adjust)),
                     ffi.NULL,
                     tsp_op_EMA,
                     ffi.NULL,
                 )
         else:
             self.handler = tsp_init_handler(
-                ffi.cast("void *", tsp_ema_data_init(self.length, self.sma, self.c_alpha, self.adjust)),
+                ffi.cast("void *", tsp_ema_data_init(self.length, self.sma, self.alpha, self.adjust)),
                 ffi.NULL,
                 tsp_op_EMA,
                 ffi.NULL,
