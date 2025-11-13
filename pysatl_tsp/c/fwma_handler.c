@@ -30,7 +30,6 @@ static int tsp_create_fibonacci_sequence(struct tsp_fwma_data *data) {
 			data->fib_sum += data->fib_sequence[tmp - i];
 		}
 	}
-
 	// Normalize weights to create probability distribution
 	for (int i = 0; i < queue->capacity; i++) {
 		data->fib_sequence[i] = data->fib_sequence[i] / data->fib_sum;
@@ -102,6 +101,14 @@ static int tsp_fwma_data_put(struct tsp_fwma_data *data, float value) {
 	return 0;
 }
 
+/* get value from FWMA data buffer */
+static double tsp_fwma_data_get(struct tsp_fwma_data *data) {
+	struct tsp_queue *queue = data->queue;
+	double value = queue->buffer[queue->head];
+	queue->head = (queue->head + 1) % queue->capacity;
+	return value;
+}
+
 /*
  * Computes Fibonacci Weighted Moving Average (FWMA)
  *
@@ -115,30 +122,30 @@ static int tsp_fwma_data_put(struct tsp_fwma_data *data, float value) {
  */
 double tsp_op_FWMA(struct tsp_handler *handler, void *next) {
 	struct tsp_fwma_data *data = (struct tsp_fwma_data *)handler->data;
-	struct tsp_queue *q = (struct tsp_queue *)handler->data;
+	struct tsp_queue *q = (struct tsp_queue *)data->queue;
 	double *value = (double *)next;
 	double weighted_sum = 0.0;
-
 	// Phase 1: Buffer filling (warm-up period)
 	// During initial calls, fill the buffer until we have enough data points
 	if (q->size < q->capacity) {
 		q->size++;			 // Track how many values we've collected
 		q->sum += *value;		 // Maintain running sum (unused in FWMA?)
 		tsp_fwma_data_put(data, *value); // Add value to circular buffer
-
-		// Return NaN during warm-up to indicate insufficient data
-		double none = 1.0 / 0.0; // Creates IEEE 754 infinity/NaN
-		return none;
 	} else {
 		// Buffer is full - normal operation, just add the new value
 		tsp_fwma_data_put(data, *value);
 	}
 
+	if (q->size < q->capacity) {
+		double none = 1.0 / 0.0; // Creates infinity/NaN
+		return none;
+	}
 	// Phase 2: Calculate weighted average
 	// Multiply each data point in the buffer by its corresponding Fibonacci weight
 	for (int i = 0; i < q->capacity; i++) {
-		weighted_sum += q->buffer[i] * data->fib_sequence[i];
+		weighted_sum += data->fib_sequence[i] * tsp_fwma_data_get(data);
 	}
+	q->head = (q->head + 1) % q->capacity;
 
 	return weighted_sum;
 }
