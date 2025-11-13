@@ -105,6 +105,7 @@ class CFWMAHandler(Handler[float | None, float | None]):
             self.asc = 1
         else:
             self.asc = 0
+
         if source is not None:
             if hasattr(source, "handler"):
                 self.handler = tsp_init_handler(

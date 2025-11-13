@@ -14,7 +14,7 @@ c_def = """"""
 headers = ""
 src = []
 
-# Read and get C headers
+# Read and get CDEF and get path to Headers
 for item in project_dir.rglob("*.h"):
     with open(item) as f:
         headers += f'#include "{item.relative_to(project_dir)}"\n'
