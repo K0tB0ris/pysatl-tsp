@@ -45,8 +45,8 @@ struct tsp_ema_data *tsp_ema_data_init(int capacity, int sma, double alpha, int 
 	return obj;
 }
 
-void tsp_free_ema_data(void *q) {
-	struct tsp_ema_data *p = (struct tsp_ema_data *)q;
+void tsp_free_ema_data(struct tsp_ema_data *q) {
+	struct tsp_ema_data *p = q;
 	if (p->queue != NULL) {
 		tsp_free_queue((void *)p->queue);
 	}

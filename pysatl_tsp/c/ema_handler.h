@@ -23,7 +23,7 @@ struct tsp_ema_data {
 	double ema_denominator;	 // Cumulative weight sum for proper normalization
 };
 struct tsp_ema_data *tsp_ema_data_init(int capacity, int sma, double alpha, int adjust);
-void tsp_free_ema_data(void *q);
+void tsp_free_ema_data(struct tsp_ema_data *q);
 double tsp_op_EMA(struct tsp_handler *handler, void *next);
 TSP_API_END
 #endif /* EMA_HANDLER_H */
