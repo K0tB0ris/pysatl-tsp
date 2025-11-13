@@ -1,4 +1,20 @@
+from collections.abc import Iterator
+from typing import Any, cast
+
+import cffi
+
+from pysatl_tsp._c.lib import (
+    tsp_free_fwma_data,
+    tsp_free_handler,
+    tsp_fwma_data_init,
+    tsp_init_handler,
+    tsp_next_chain,
+    tsp_op_FWMA,
+)
+from pysatl_tsp.core import Handler
 from pysatl_tsp.core.processor.inductive.weighted_moving_average_handler import WeightedMovingAverageHandler
+
+ffi = cffi.FFI()
 
 
 class FWMAHandler(WeightedMovingAverageHandler):
@@ -74,3 +90,61 @@ class FWMAHandler(WeightedMovingAverageHandler):
             sequence.append(sequence[i - 1] + sequence[i - 2])
 
         return sequence
+
+
+class CFWMAHandler(Handler[float | None, float | None]):
+    def __init__(
+        self,
+        length: int = 10,
+        asc: bool = False,
+        source: Handler[Any, float | None] | None = None,
+    ):
+        super().__init__(source)
+        self.length = length if length and length > 0 else 10
+        if asc:
+            self.asc = 1
+        else:
+            self.asc = 0
+        if source is not None:
+            if hasattr(source, "handler"):
+                self.handler = tsp_init_handler(
+                    ffi.cast("void *", tsp_fwma_data_init(self.length, self.asc)),
+                    source.handler,
+                    tsp_op_FWMA,
+                    ffi.NULL,
+                )
+            else:
+                self.handler = tsp_init_handler(
+                    ffi.cast("void *", tsp_fwma_data_init(self.length, self.asc)),
+                    ffi.NULL,
+                    tsp_op_FWMA,
+                    ffi.NULL,
+                )
+        else:
+            self.handler = tsp_init_handler(
+                ffi.cast("void *", tsp_fwma_data_init(self.length, self.asc)),
+                ffi.NULL,
+                tsp_op_FWMA,
+                ffi.NULL,
+            )
+
+    def __iter__(self) -> Iterator[float | None]:
+        if self.source is None:
+            raise ValueError("Source is not set")
+        self.src_itr = iter(self.source)
+        self.handler.py_iter = ffi.cast("void*", id(self.src_itr))
+        return self
+
+    def __next__(self) -> float | None:
+        res = tsp_next_chain(self.handler, 64)
+        if res != ffi.NULL:
+            if cast(float, res[0]) != float("inf"):
+                return cast(float, res[0])
+            else:
+                return None
+        else:
+            raise StopIteration
+
+    def __del__(self) -> None:
+        tsp_free_fwma_data(self.handler.data)
+        tsp_free_handler(self.handler)
