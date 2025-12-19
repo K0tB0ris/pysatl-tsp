@@ -21,6 +21,7 @@ struct tsp_ema_data {
 	double alpha;		 // Smoothing constant - typically 2/(N+1) for N-period EMA
 	double ema_numerator;	 // Current EMA value before normalization
 	double ema_denominator;	 // Cumulative weight sum for proper normalization
+	int sma_position;
 };
 struct tsp_ema_data *tsp_ema_data_init(int capacity, int sma, double alpha, int adjust);
 void tsp_free_ema_data(struct tsp_ema_data *q);
