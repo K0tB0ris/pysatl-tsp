@@ -40,7 +40,7 @@ struct tsp_wma_data *tsp_wma_data_init(int capacity, int asc) {
 	obj->queue = tsp_queue_init(capacity);
 	if (obj->queue == NULL) {
 		fprintf(stderr, "Could not allocate memory to initialize queue\n");
-		// Note: obj is not freed here - potential memory leak
+		free(obj);
 		return NULL;
 	}
 
@@ -49,7 +49,8 @@ struct tsp_wma_data *tsp_wma_data_init(int capacity, int asc) {
 	obj->weights = malloc(sizeof(obj->weights[0]) * capacity);
 	if (obj->weights == NULL) {
 		fprintf(stderr, "Could not allocate memory to initialize weights\n");
-		// Note: Previous allocations are not freed - potential memory leak
+		tsp_free_queue((void *)obj->queue);
+		free(obj);
 		return NULL;
 	}
 
@@ -66,14 +67,19 @@ struct tsp_wma_data *tsp_wma_data_init(int capacity, int asc) {
 /* Free WMA data structure and all its components */
 void tsp_free_wma_data(struct tsp_wma_data *q) {
 	struct tsp_wma_data *p = q;
-	if (p->queue != NULL) {
-		tsp_free_queue((void *)p->queue);
+	if (p != NULL) {
+		if (p->queue != NULL) {
+			tsp_free_queue((void *)p->queue);
+		}
+		if (p->weights != NULL) {
+			free(p->weights);
+		}
+		free(p);
 	}
-	free(p);
 }
 
 /* Add new value to WMA data buffer */
-static int tsp_wma_data_put(struct tsp_wma_data *data, float value) {
+static int tsp_wma_data_put(struct tsp_wma_data *data, double value) {
 	struct tsp_queue *queue = data->queue;
 	queue->buffer[queue->tail] = value;
 	queue->tail = (queue->tail + 1) % queue->capacity;
@@ -115,7 +121,7 @@ double tsp_op_WMA(struct tsp_handler *handler, void *next) {
 	}
 
 	if (q->size < q->capacity) {
-		double none = 1.0 / 0.0; // Creates infinity/NaN
+		double none = 0.0 / 0.0; // Creates infinity/NaN
 		return none;
 	}
 	// Phase 2: Calculate weighted average
