@@ -78,9 +78,7 @@ plt.show()
 
 Examples of CHandler:
 
-[example1](example.py)
-
-[example2](compare.py)
+[example](compare.py)
 
 ## Development
 
