@@ -139,7 +139,7 @@ class CFWMAHandler(Handler[float | None, float | None]):
     def __next__(self) -> float | None:
         res = tsp_next_chain(self.handler, 64)
         if res != ffi.NULL:
-            if cast(float, res[0]) != float("inf"):
+            if cast(float, res[0]) == cast(float, res[0]):
                 return cast(float, res[0])
             else:
                 return None
