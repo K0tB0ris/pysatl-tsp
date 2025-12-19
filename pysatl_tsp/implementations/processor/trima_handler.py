@@ -2,7 +2,7 @@ from collections.abc import Iterator
 from typing import Any
 
 from pysatl_tsp.core import Handler
-from pysatl_tsp.implementations.processor.sma_handler import SMAHandler
+from pysatl_tsp.implementations.processor.sma_handler import CSMAHandler, SMAHandler
 
 
 class TRIMAHandler(Handler[float | None, float | None]):
@@ -64,3 +64,16 @@ class TRIMAHandler(Handler[float | None, float | None]):
             raise ValueError("Source is not set")
 
         yield from self.source | SMAHandler(length=self.half_length) | SMAHandler(length=self.half_length)
+
+
+class CTRIMAHandler(Handler[float | None, float | None]):
+    def __init__(self, length: int = 10, source: Handler[Any, float | None] | None = None):
+        super().__init__(source=source)
+        self.length = length if length and length > 0 else 10
+        self.half_length = round(0.5 * (self.length + 1))
+
+    def __iter__(self) -> Iterator[float | None]:
+        if self.source is None:
+            raise ValueError("Source is not set")
+
+        yield from self.source | CSMAHandler(length=self.half_length) | CSMAHandler(length=self.half_length)
