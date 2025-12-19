@@ -24,13 +24,16 @@ void even_numbers_buffer_call_basic_tests(PyObject *pIter, long count) {
 	for (int i = 0; i < size / 2 + 100; i++) {
 		res = tsp_next_buffer(handler, 64);
 		if (i <= size / 2) {
-			TEST_ASSERT_NOT_NULL(res);
+			TEST_ASSERT_NOT_NULL_MESSAGE(
+			    res, "The handler returned NULL instead of a number");
 			if (res != NULL) {
 				tmp = *res;
-				TEST_ASSERT_EQUAL_DOUBLE(2 * i + 5.0, tmp);
+				TEST_ASSERT_EQUAL_DOUBLE_MESSAGE(
+				    2 * i + 5.0, tmp, "The handler calculated incorrectly");
 			}
 		} else {
-			TEST_ASSERT_NULL(res);
+			TEST_ASSERT_NULL_MESSAGE(res,
+						 "If the iterator is empty, it should return NULL");
 		}
 	}
 	tsp_free_handler(handler);
@@ -57,7 +60,7 @@ void even_numbers_buffer_basic_test(void) {
 
 			if (pInstance != NULL) {
 				PyGILState_STATE gstate = PyGILState_Ensure();
-				// Получаем итератор
+				// Get Python iterator
 				pIter = PyObject_GetIter(pInstance);
 				if (pIter != NULL) {
 					even_numbers_buffer_call_basic_tests(pIter, c_arg);
@@ -91,13 +94,16 @@ void odd_numbers_buffer_call_basic_tests(PyObject *pIter, long count) {
 	for (int i = 0; i < size / 2 + 100; i++) {
 		res = tsp_next_buffer(handler, 64);
 		if (i < size / 2) {
-			TEST_ASSERT_NOT_NULL(res);
+			TEST_ASSERT_NOT_NULL_MESSAGE(
+			    res, "The handler returned NULL instead of a number");
 			if (res != NULL) {
 				tmp = *res;
-				TEST_ASSERT_EQUAL_DOUBLE(2 * i + 6.0, tmp);
+				TEST_ASSERT_EQUAL_DOUBLE_MESSAGE(
+				    2 * i + 6.0, tmp, "The handler calculated incorrectly");
 			}
 		} else {
-			TEST_ASSERT_NULL(res);
+			TEST_ASSERT_NULL_MESSAGE(res,
+						 "If the iterator is empty, it should return NULL");
 		}
 	}
 	tsp_free_handler(handler);
@@ -124,7 +130,7 @@ void odd_numbers_buffer_basic_test(void) {
 
 			if (pInstance != NULL) {
 				PyGILState_STATE gstate = PyGILState_Ensure();
-				// Получаем итератор
+				// Get Python iterator
 				pIter = PyObject_GetIter(pInstance);
 				if (pIter != NULL) {
 					odd_numbers_buffer_call_basic_tests(pIter, c_arg);
@@ -155,13 +161,16 @@ void natural_numbers_buffer_call_basic_tests(PyObject *pIter, long count) {
 	for (int i = 0; i < size + 100; i++) {
 		res = tsp_next_buffer(handler, 64);
 		if (i <= size) {
-			TEST_ASSERT_NOT_NULL(res);
+			TEST_ASSERT_NOT_NULL_MESSAGE(
+			    res, "The handler returned NULL instead of a number");
 			if (res != NULL) {
 				tmp = *res;
-				TEST_ASSERT_EQUAL_DOUBLE(i + 5.0, tmp);
+				TEST_ASSERT_EQUAL_DOUBLE_MESSAGE(
+				    i + 5.0, tmp, "The handler calculated incorrectly");
 			}
 		} else {
-			TEST_ASSERT_NULL(res);
+			TEST_ASSERT_NULL_MESSAGE(res,
+						 "If the iterator is empty, it should return NULL");
 		}
 	}
 	tsp_free_handler(handler);
@@ -188,7 +197,7 @@ void natural_numbers_buffer_basic_test(void) {
 
 			if (pInstance != NULL) {
 				PyGILState_STATE gstate = PyGILState_Ensure();
-				// Получаем итератор
+				// Get Python iterator
 				pIter = PyObject_GetIter(pInstance);
 				if (pIter != NULL) {
 					natural_numbers_buffer_call_basic_tests(pIter, c_arg);
@@ -219,13 +228,16 @@ void even_numbers_pipeline_call_basic_tests(PyObject *pIter, long count) {
 	for (int i = 0; i < size / 2 + 100; i++) {
 		res = tsp_next_chain(handler2, 64);
 		if (i <= size / 2) {
-			TEST_ASSERT_NOT_NULL(res);
+			TEST_ASSERT_NOT_NULL_MESSAGE(
+			    res, "The handler returned NULL instead of a number");
 			if (res != NULL) {
 				tmp = *res;
-				TEST_ASSERT_EQUAL_DOUBLE(2 * i + 10.0, tmp);
+				TEST_ASSERT_EQUAL_DOUBLE_MESSAGE(
+				    2 * i + 10.0, tmp, "The handler calculated incorrectly");
 			}
 		} else {
-			TEST_ASSERT_NULL(res);
+			TEST_ASSERT_NULL_MESSAGE(res,
+						 "If the iterator is empty, it should return NULL");
 		}
 	}
 	tsp_free_handler(handler1);
@@ -253,7 +265,7 @@ void even_numbers_pipeline_basic_test(void) {
 
 			if (pInstance != NULL) {
 				PyGILState_STATE gstate = PyGILState_Ensure();
-				// Получаем итератор
+				// Get Python iterator
 				pIter = PyObject_GetIter(pInstance);
 				if (pIter != NULL) {
 					even_numbers_pipeline_call_basic_tests(pIter, c_arg);
@@ -288,13 +300,16 @@ void odd_numbers_pipeline_call_basic_tests(PyObject *pIter, long count) {
 	for (int i = 0; i < size / 2 + 100; i++) {
 		res = tsp_next_chain(handler2, 64);
 		if (i < size / 2) {
-			TEST_ASSERT_NOT_NULL(res);
+			TEST_ASSERT_NOT_NULL_MESSAGE(
+			    res, "The handler returned NULL instead of a number");
 			if (res != NULL) {
 				tmp = *res;
-				TEST_ASSERT_EQUAL_DOUBLE(2 * i + 11.0, tmp);
+				TEST_ASSERT_EQUAL_DOUBLE_MESSAGE(
+				    2 * i + 11.0, tmp, "The handler calculated incorrectly");
 			}
 		} else {
-			TEST_ASSERT_NULL(res);
+			TEST_ASSERT_NULL_MESSAGE(res,
+						 "If the iterator is empty, it should return NULL");
 		}
 	}
 	tsp_free_handler(handler1);
@@ -322,7 +337,7 @@ void odd_numbers_pipeline_basic_test(void) {
 
 			if (pInstance != NULL) {
 				PyGILState_STATE gstate = PyGILState_Ensure();
-				// Получаем итератор
+				// Get Python iterator
 				pIter = PyObject_GetIter(pInstance);
 				if (pIter != NULL) {
 					odd_numbers_pipeline_call_basic_tests(pIter, c_arg);
@@ -354,13 +369,16 @@ void natural_numbers_pipeline_call_basic_tests(PyObject *pIter, long count) {
 	for (int i = 0; i < size + 100; i++) {
 		res = tsp_next_chain(handler2, 64);
 		if (i <= size) {
-			TEST_ASSERT_NOT_NULL(res);
+			TEST_ASSERT_NOT_NULL_MESSAGE(
+			    res, "The handler returned NULL instead of a number");
 			if (res != NULL) {
 				tmp = *res;
-				TEST_ASSERT_EQUAL_DOUBLE(i + 10.0, tmp);
+				TEST_ASSERT_EQUAL_DOUBLE_MESSAGE(
+				    i + 10.0, tmp, "The handler calculated incorrectly");
 			}
 		} else {
-			TEST_ASSERT_NULL(res);
+			TEST_ASSERT_NULL_MESSAGE(res,
+						 "If the iterator is empty, it should return NULL");
 		}
 	}
 	tsp_free_handler(handler1);
@@ -388,7 +406,7 @@ void natural_numbers_pipeline_basic_test(void) {
 
 			if (pInstance != NULL) {
 				PyGILState_STATE gstate = PyGILState_Ensure();
-				// Получаем итератор
+				// Get Python iterator
 				pIter = PyObject_GetIter(pInstance);
 				if (pIter != NULL) {
 					natural_numbers_pipeline_call_basic_tests(pIter, c_arg);
@@ -414,9 +432,9 @@ void null_handler_test(void) {
 	struct tsp_handler *handler = NULL;
 	double *res;
 	res = tsp_next_buffer(handler, 64);
-	TEST_ASSERT_NULL(res);
+	TEST_ASSERT_NULL_MESSAGE(res, "If the handler is NULL, then NULL must be returned");
 	res = tsp_next_chain(handler, 64);
-	TEST_ASSERT_NULL(res);
+	TEST_ASSERT_NULL_MESSAGE(res, "If the handler is NULL, then NULL must be returned");
 }
 
 void null_python_iterator_test(void) {
@@ -424,13 +442,12 @@ void null_python_iterator_test(void) {
 	double *res;
 
 	res = tsp_next_buffer(handler, 64);
-
-	TEST_ASSERT_NULL(res);
-
+	TEST_ASSERT_NULL_MESSAGE(res, "Should return NULL, if no Python iterator is declared");
 	tsp_free_handler(handler);
+
 	handler = tsp_init_handler(NULL, NULL, tsp_op_addFive, NULL);
 	res = tsp_next_chain(handler, 64);
-	TEST_ASSERT_NULL(res);
+	TEST_ASSERT_NULL_MESSAGE(res, "Should return NULL, if no Python iterator is declared");
 	tsp_free_handler(handler);
 }
 
@@ -439,9 +456,11 @@ void null_operation_call_test(PyObject *pIter) {
 	struct tsp_handler *handler2 = tsp_init_handler(NULL, handler1, tsp_op_addFive, NULL);
 	double *res;
 	res = tsp_next_buffer(handler1, 64);
-	TEST_ASSERT_NULL(res);
+	TEST_ASSERT_NULL_MESSAGE(res, "Should return NULL, if there is no operation");
+
 	res = tsp_next_chain(handler2, 64);
-	TEST_ASSERT_NOT_NULL(res);
+	TEST_ASSERT_NULL_MESSAGE(res, "Should return NULL, if there is no operation");
+
 	tsp_free_handler(handler1);
 	tsp_free_handler(handler2);
 }
@@ -466,7 +485,7 @@ void null_operation_test(void) {
 
 			if (pInstance != NULL) {
 				PyGILState_STATE gstate = PyGILState_Ensure();
-				// Получаем итератор
+				// Get Python iterator
 				pIter = PyObject_GetIter(pInstance);
 				if (pIter != NULL) {
 					null_operation_call_test(pIter);
