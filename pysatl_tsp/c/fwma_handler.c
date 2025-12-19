@@ -61,7 +61,7 @@ struct tsp_fwma_data *tsp_fwma_data_init(int capacity, int asc) {
 	obj->queue = tsp_queue_init(capacity);
 	if (obj->queue == NULL) {
 		fprintf(stderr, "Could not allocate memory to initialize queue\n");
-		// Note: obj is not freed here - potential memory leak
+		free(obj);
 		return NULL;
 	}
 
@@ -70,7 +70,8 @@ struct tsp_fwma_data *tsp_fwma_data_init(int capacity, int asc) {
 	obj->fib_sequence = malloc(sizeof(obj->fib_sequence[0]) * capacity);
 	if (obj->fib_sequence == NULL) {
 		fprintf(stderr, "Could not allocate memory to initialize fibonacci sequence\n");
-		// Note: Previous allocations are not freed - potential memory leak
+		tsp_free_queue((void *)obj->queue);
+		free(obj);
 		return NULL;
 	}
 
@@ -87,14 +88,19 @@ struct tsp_fwma_data *tsp_fwma_data_init(int capacity, int asc) {
 /* Free FWMA data structure and all its components */
 void tsp_free_fwma_data(struct tsp_fwma_data *q) {
 	struct tsp_fwma_data *p = q;
-	if (p->queue != NULL) {
-		tsp_free_queue((void *)p->queue);
+	if (p != NULL) {
+		if (p->queue != NULL) {
+			tsp_free_queue((void *)p->queue);
+		}
+		if (p->fib_sequence != NULL) {
+			free(p->fib_sequence);
+		}
+		free(p);
 	}
-	free(p);
 }
 
 /* Add new value to FWMA data buffer */
-static int tsp_fwma_data_put(struct tsp_fwma_data *data, float value) {
+static int tsp_fwma_data_put(struct tsp_fwma_data *data, double value) {
 	struct tsp_queue *queue = data->queue;
 	queue->buffer[queue->tail] = value;
 	queue->tail = (queue->tail + 1) % queue->capacity;
@@ -129,7 +135,6 @@ double tsp_op_FWMA(struct tsp_handler *handler, void *next) {
 	// During initial calls, fill the buffer until we have enough data points
 	if (q->size < q->capacity) {
 		q->size++;			 // Track how many values we've collected
-		q->sum += *value;		 // Maintain running sum (unused in FWMA?)
 		tsp_fwma_data_put(data, *value); // Add value to circular buffer
 	} else {
 		// Buffer is full - normal operation, just add the new value
@@ -137,7 +142,7 @@ double tsp_op_FWMA(struct tsp_handler *handler, void *next) {
 	}
 
 	if (q->size < q->capacity) {
-		double none = 1.0 / 0.0; // Creates infinity/NaN
+		double none = 0.0 / 0.0; // Creates infinity/NaN
 		return none;
 	}
 	// Phase 2: Calculate weighted average
