@@ -441,9 +441,9 @@ void null_operation_call_test(PyObject *pIter) {
 	res = tsp_next_buffer(handler1, 64);
 	TEST_ASSERT_NULL(res);
 	res = tsp_next_chain(handler2, 64);
-	TEST_ASSERT_NULL(res);
+	TEST_ASSERT_NOT_NULL(res);
 	tsp_free_handler(handler1);
-	//tsp_free_handler(handler2);
+	tsp_free_handler(handler2);
 }
 
 void null_operation_test(void) {
