@@ -26,10 +26,12 @@ struct tsp_handler *tsp_init_handler(void *data, struct tsp_handler *src,
 }
 
 void tsp_free_handler(struct tsp_handler *handler) {
-	if (handler->buffer != NULL) {
-		free(handler->buffer);
+	if (handler != NULL){
+		if (handler->buffer != NULL) {
+			free(handler->buffer);
+		}
+		free(handler);
 	}
-	free(handler);
 }
 
 /* Init circular queue
@@ -44,6 +46,7 @@ struct tsp_queue *tsp_queue_init(int capacity) {
 	obj->buffer = malloc(capacity * sizeof(obj->buffer[0]));
 	if (!obj->buffer) {
 		fprintf(stderr, "Could not allocate memory for Queue\n");
+		free(obj);
 		return NULL;
 	}
 	obj->capacity = capacity;
@@ -56,10 +59,12 @@ struct tsp_queue *tsp_queue_init(int capacity) {
 
 void tsp_free_queue(void *q) {
 	struct tsp_queue *p = (struct tsp_queue *)q;
-	if (p->buffer != NULL) {
-		free(p->buffer);
+	if (p != NULL){
+		if (p->buffer != NULL) {
+			free(p->buffer);
+		}
+		free(p);
 	}
-	free(p);
 }
 
 /* tsp_next_buffer apply operation to the next element from the iterator */
@@ -67,6 +72,11 @@ double *tsp_next_buffer(struct tsp_handler *handler, int capacity) {
 	// check handler existence
 	if (handler == NULL) {
 		fprintf(stderr, "Handler pointer is NULL \n");
+		return NULL;
+	}
+
+	if (handler->operation == NULL) {
+		fprintf(stderr, "Handler operation doesn't set\n");
 		return NULL;
 	}
 
@@ -82,6 +92,11 @@ double *tsp_next_buffer(struct tsp_handler *handler, int capacity) {
 		handler->buffer = (void *)malloc(capacity * sizeof(double));
 	}
 
+	if (handler->py_iter == NULL) {
+		fprintf(stderr, "Handler's python source iterator doesn't set \n");
+		return NULL;
+	}
+
 	// Setting up future work with Python iterator
 	PyGILState_STATE gstate = PyGILState_Ensure();
 	PyObject *pIterator = handler->py_iter;
@@ -94,7 +109,10 @@ double *tsp_next_buffer(struct tsp_handler *handler, int capacity) {
 	handler->buf_end = 0;
 	for (int j = 0; j < capacity; j++) {
 		if ((pItem = PyIter_Next(pIterator)) != NULL) {
-			double tmp = PyFloat_AsDouble(pItem);
+			double tmp = 0.0 / 0.0;
+			if (pItem != Py_None){
+				tmp = PyFloat_AsDouble(pItem);
+			}
 			tmp = handler->operation(handler, (void *)&tmp);
 			res[handler->buf_end++] = tmp;
 			Py_DECREF(pItem);
@@ -117,10 +135,18 @@ double *tsp_next_buffer(struct tsp_handler *handler, int capacity) {
  * And then sequentially applies operations to the data
  */
 double *tsp_next_chain(struct tsp_handler *handler, int capacity) {
+	if (handler == NULL) {
+		fprintf(stderr, "Handler pointer is NULL \n");
+		return NULL;
+	}
 	if (handler->src == NULL) {
 		// Find handler(NULL, float)
 		return tsp_next_buffer(handler, capacity);
 	} else {
+		if (handler->operation == NULL) {
+			fprintf(stderr, "Handler operation doesn't set\n");
+			return NULL;
+		}
 		// create buffer, if it doesn't exist
 		if (handler->buffer == NULL) {
 			handler->buffer = (void *)malloc(capacity * sizeof(double));
