@@ -7,33 +7,43 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [ "3.10", "3.11", "3.12", "3.13" ]
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
-         python-version: ${{ matrix.python-version }}
+          python-version: ${{ matrix.python-version }}
       - name: Install Poetry
         run: |
           pipx install poetry==1.8.0
-
       - name: Install dependencies
         run: |
           poetry install --with dev
-
       - name: Lint with ruff
         run: |
           poetry run ruff check
-
       - name: Check types
         run: |
           poetry run mypy --install-types --non-interactive
-
       - name: Run tests
         run: |
-         poetry run pytest --cov=pysatl_cpd
-
+          poetry run pytest --cov=pysatl_cpd
+      - name: Run C-tests
+        run: |
+          rm -rf build
+          mkdir -p build
+          cd build
+          cmake ..
+          make
+          cd ..
+          cd tests/test_c/
+          ./RUN_TESTS
+          cd ../..
+      - name: Clean C-tests
+        run: |
+          rm -rf build
+          rm -rf tests/test_c/RUN_TESTS
       - name: Run C example
         run: |
-         poetry run python compare.py
+          poetry run python compare.py
