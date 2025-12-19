@@ -33,6 +33,7 @@ struct tsp_ema_data *tsp_ema_data_init(int capacity, int sma, double alpha, int 
 	obj->queue = tsp_queue_init(capacity);
 	if (obj->queue == NULL) {
 		fprintf(stderr, "Could not allocate memory to initialize queue\n");
+		free(obj);
 		return NULL;
 	}
 
@@ -42,21 +43,24 @@ struct tsp_ema_data *tsp_ema_data_init(int capacity, int sma, double alpha, int 
 
 	obj->ema_numerator = 0;
 	obj->ema_denominator = 0;
+	obj->sma_position = 0;
 	return obj;
 }
 
 void tsp_free_ema_data(struct tsp_ema_data *q) {
 	struct tsp_ema_data *p = q;
-	if (p->queue != NULL) {
-		tsp_free_queue((void *)p->queue);
+	if (p != NULL) {
+		if (p->queue != NULL) {
+			tsp_free_queue((void *)p->queue);
+		}
+		free(p);
 	}
-	free(p);
 }
 
 /*
  * Add value to EMA queue during SMA warm-up period
  */
-static int tsp_ema_data_put(struct tsp_ema_data *data, float value) {
+static int tsp_ema_data_put(struct tsp_ema_data *data, double value) {
 	struct tsp_queue *queue = data->queue;
 	queue->buffer[queue->tail] = value;
 	queue->tail = (queue->tail + 1) % queue->capacity;
@@ -96,9 +100,10 @@ static void tsp_clear_queue(struct tsp_queue *queue) {
 static int tsp_update_state(struct tsp_ema_data *data, double *value) {
 
 	// Maintain queue for SMA phase or reference
-	if (value != NULL) {
-		if (data->queue->size < data->queue->capacity) {
-			// Growing window phase
+	if (data->sma_position < data->queue->capacity) {
+		// Growing window phase
+		data->sma_position++;
+		if (*value == *value) {
 			data->queue->size++;
 			data->queue->sum += *value;
 			tsp_ema_data_put(data, *value);
@@ -106,7 +111,7 @@ static int tsp_update_state(struct tsp_ema_data *data, double *value) {
 	}
 
 	// Wait until queue is full before transitioning from SMA to EMA
-	if ((data->sma != 0) && (data->queue->size < data->queue->capacity)) {
+	if ((data->sma != 0) && (data->sma_position < data->queue->capacity)) {
 		return 0;
 	}
 
@@ -120,11 +125,11 @@ static int tsp_update_state(struct tsp_ema_data *data, double *value) {
 			data->ema_denominator = 1;
 		}
 		data->sma = 0; // Enter EMA mode
-	} else if ((data->adjust != 0) && (value != NULL)) {
+	} else if ((data->adjust != 0) && (*value == *value)) {
 		// Unbiased EMA (accounts for limited history)
 		data->ema_numerator = (1 - data->alpha) * data->ema_numerator + *value;
 		data->ema_denominator = (1 - data->alpha) * data->ema_denominator + 1;
-	} else if ((data->adjust == 0) && (value != NULL)) {
+	} else if ((data->adjust == 0) && (*value == *value)) {
 		// Standard EMA (assumes infinite history)
 		if (data->ema_denominator != 0.0) {
 			data->ema_numerator =
@@ -155,7 +160,7 @@ double tsp_op_EMA(struct tsp_handler *handler, void *next) {
 	tsp_update_state(data, value);
 
 	// Initialize with infinity to indicate "not available"
-	double ma = 1.0 / 0.0; // Positive infinity
+	double ma = 0.0 / 0.0; // Positive infinity
 
 	// Only compute EMA if we have valid denominator (sufficient data)
 	if (data->ema_denominator != 0) {
