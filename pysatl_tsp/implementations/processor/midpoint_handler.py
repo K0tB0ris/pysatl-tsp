@@ -1,8 +1,22 @@
 from __future__ import annotations
 
-from typing import Any
+from collections.abc import Iterator
+from typing import Any, cast
 
+import cffi
+
+from pysatl_tsp._c.lib import (
+    tsp_free_handler,
+    tsp_free_midpoint_data,
+    tsp_init_handler,
+    tsp_midpoint_data_init,
+    tsp_next_chain,
+    tsp_op_MIDPOINT,
+)
+from pysatl_tsp.core import Handler
 from pysatl_tsp.core.processor.inductive.moving_window_handler import MovingWindowHandler
+
+ffi = cffi.FFI()
 
 
 class MidpointHandler(MovingWindowHandler[float | None, float | None]):
@@ -65,3 +79,47 @@ class MidpointHandler(MovingWindowHandler[float | None, float | None]):
             lowest = min(lowest, v)
 
         return (highest + lowest) / 2
+
+
+class CMidpointHandler(Handler[float | None, float | None]):
+    def __init__(
+        self,
+        length: int = 10,
+        source: Handler[Any, float | None] | None = None,
+    ):
+        super().__init__(source)
+        self.length = length if length and length > 0 else 10
+        if source is not None:
+            if hasattr(source, "handler"):
+                self.handler = tsp_init_handler(
+                    ffi.cast("void *", tsp_midpoint_data_init(self.length)), source.handler, tsp_op_MIDPOINT, ffi.NULL
+                )
+            else:
+                self.handler = tsp_init_handler(
+                    ffi.cast("void *", tsp_midpoint_data_init(self.length)), ffi.NULL, tsp_op_MIDPOINT, ffi.NULL
+                )
+        else:
+            self.handler = tsp_init_handler(
+                ffi.cast("void *", tsp_midpoint_data_init(self.length)), ffi.NULL, tsp_op_MIDPOINT, ffi.NULL
+            )
+
+    def __iter__(self) -> Iterator[float | None]:
+        if self.source is None:
+            raise ValueError("Source is not set")
+        self.src_itr = iter(self.source)
+        self.handler.py_iter = ffi.cast("void*", id(self.src_itr))
+        return self
+
+    def __next__(self) -> float | None:
+        res = tsp_next_chain(self.handler, 64)
+        if res != ffi.NULL:
+            if cast(float, res[0]) == cast(float, res[0]):
+                return cast(float, res[0])
+            else:
+                return None
+        else:
+            raise StopIteration
+
+    def __del__(self) -> None:
+        tsp_free_midpoint_data(self.handler.data)
+        tsp_free_handler(self.handler)
